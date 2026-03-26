@@ -46,3 +46,7 @@ bd init
 
 - [Beads GitHub](https://github.com/steveyegge/beads)
 - [Beads Documentation](https://beads.dev)
+
+## Workflow Documentation
+
+For workflow patterns and best practices, see the "Task Management with Beads" section in your project's `CLAUDE.md`.

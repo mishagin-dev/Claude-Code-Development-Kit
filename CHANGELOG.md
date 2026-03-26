@@ -6,6 +6,23 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 
+## [2.4.1] - 2026-03-26
+
+### Changed
+- **Refactored Beads documentation architecture** - Aligned with 3-tier documentation system
+  - Removed separate `AGENTS.md` file (created duplicate AI context)
+  - Created `workflow/ai-context/beads-section.md` as injectable template
+  - Beads instructions now injected into `CLAUDE.md` during installation
+  - Section 7 "Task Management with Beads" only appears when Beads is selected
+  - Updated `commands/bd/README.md` with reference to CLAUDE.md
+
+### Why This Change
+- Beads is a CLI tool, not an external AI that reads configuration files
+- `AGENTS.md` would only be read by Claude, duplicating `CLAUDE.md` purpose
+- Template injection matches the pattern used for `MCP-ASSISTANT-RULES.md`
+- Cleaner architecture: one master AI context file per project
+
+
 ## [2.4.0] - 2026-03-26
 
 ### Added
