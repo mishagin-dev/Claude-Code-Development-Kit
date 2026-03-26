@@ -2,8 +2,8 @@ You are working on the current project. The user has requested to refactor speci
 
 ## Auto-Loaded Project Context:
 @/CLAUDE.md
-@/docs/ai-context/project-structure.md
-@/docs/ai-context/docs-overview.md
+@/workflow/ai-context/project-structure.md
+@/workflow/ai-context/docs-overview.md
 
 ## Step 1: Parse Tagged Files
 Extract all @ tagged file paths from the user's arguments. Only process files that are explicitly tagged with @ symbols.
@@ -160,8 +160,21 @@ Implement the refactoring based on the synthesized analysis:
 - **Follow coding standards** - Apply project's style guidelines
 - **Test compatibility** - Verify imports work correctly
 
+## Step 8: Post-Refactor Simplification
 
-## Step 8: Quality Verification
+After restructuring is complete, run `/simplify` on all newly created and modified files to:
+
+- Remove redundant re-exports or pass-through layers introduced for backward compatibility
+- Consolidated extracted utilies with existing project-level utilities
+- Simplify interfaces between newly split modules
+- Clean up scaffolding code that was needed during restructuring but not after
+
+**Skip Conditions:**
+
+- The refactoring was purely structural (directory moves, renames) with no logic changes
+- User EXPLICITLY opted out
+
+## Step 9: Quality Verification
 
 For each refactored file:
 - **Check imports** - Verify all imports resolve correctly

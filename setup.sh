@@ -22,6 +22,7 @@ NC='\033[0m' # No Color
 TARGET_DIR=""
 INSTALL_CONTEXT7="n"
 INSTALL_GEMINI="n"
+INSTALL_BEADS="n"
 INSTALL_NOTIFICATIONS="n"
 OS=""
 AUDIO_PLAYER=""
@@ -262,7 +263,16 @@ prompt_optional_components() {
         exit 1
     fi
     echo
-    
+
+    # Beads Task Tracker
+    print_color "$CYAN" "Beads Task Tracker (Recommended for Multi-Session Work)"
+    echo "  Persistent task tracking with dependency graph for long-running projects"
+    echo "  Install: brew install beads OR npm install -g @beads/bd"
+    if ! safe_read_yn INSTALL_BEADS "  Install Beads integration? (y/n): "; then
+        exit 1
+    fi
+    echo
+
     # Notifications
     print_color "$CYAN" "Notification System (Convenience Feature)"
     echo "  Plays audio alerts when tasks complete or input is needed"
@@ -286,9 +296,9 @@ create_directories() {
     # Main directories
     mkdir -p "$TARGET_DIR/.claude/commands"
     mkdir -p "$TARGET_DIR/.claude/hooks/config"
-    mkdir -p "$TARGET_DIR/docs/ai-context"
-    mkdir -p "$TARGET_DIR/docs/open-issues"
-    mkdir -p "$TARGET_DIR/docs/specs"
+    mkdir -p "$TARGET_DIR/workflow/ai-context"
+    mkdir -p "$TARGET_DIR/workflow/open-issues"
+    mkdir -p "$TARGET_DIR/workflow/specs"
     mkdir -p "$TARGET_DIR/logs"
     
     # Only create sounds directory if notifications are enabled
@@ -387,6 +397,17 @@ copy_framework_files() {
                 copy_with_check "$cmd" "$dest" "Command template"
             fi
         done
+
+        # Copy beads commands if Beads is selected
+        if [ "$INSTALL_BEADS" = "y" ] && [ -d "$SCRIPT_DIR/commands/bd" ]; then
+            mkdir -p "$TARGET_DIR/.claude/commands/bd"
+            for bd_cmd in "$SCRIPT_DIR/commands/bd/"*.md; do
+                if [ -f "$bd_cmd" ]; then
+                    dest="$TARGET_DIR/.claude/commands/bd/$(basename "$bd_cmd")"
+                    copy_with_check "$bd_cmd" "$dest" "Beads command"
+                fi
+            done
+        fi
     fi
     
     # Copy hooks based on user selections
@@ -467,59 +488,59 @@ copy_framework_files() {
     # Copy documentation structure
     if [ -d "$SCRIPT_DIR/docs" ]; then
         # Copy ai-context files
-        if [ -d "$SCRIPT_DIR/docs/ai-context" ]; then
-            for doc in "$SCRIPT_DIR/docs/ai-context/"*.md; do
+        if [ -d "$SCRIPT_DIR/workflow/ai-context" ]; then
+            for doc in "$SCRIPT_DIR/workflow/ai-context/"*.md; do
                 if [ -f "$doc" ]; then
-                    dest="$TARGET_DIR/docs/ai-context/$(basename "$doc")"
+                    dest="$TARGET_DIR/workflow/ai-context/$(basename "$doc")"
                     copy_with_check "$doc" "$dest" "AI context documentation"
                 fi
             done
         fi
         
         # Copy example issues
-        if [ -d "$SCRIPT_DIR/docs/open-issues" ]; then
-            for issue in "$SCRIPT_DIR/docs/open-issues/"*.md; do
+        if [ -d "$SCRIPT_DIR/workflow/open-issues" ]; then
+            for issue in "$SCRIPT_DIR/workflow/open-issues/"*.md; do
                 if [ -f "$issue" ]; then
-                    dest="$TARGET_DIR/docs/open-issues/$(basename "$issue")"
+                    dest="$TARGET_DIR/workflow/open-issues/$(basename "$issue")"
                     copy_with_check "$issue" "$dest" "Issue template"
                 fi
             done
         fi
         
         # Copy spec templates
-        if [ -d "$SCRIPT_DIR/docs/specs" ]; then
-            for spec in "$SCRIPT_DIR/docs/specs/"*.md; do
+        if [ -d "$SCRIPT_DIR/workflow/specs" ]; then
+            for spec in "$SCRIPT_DIR/workflow/specs/"*.md; do
                 if [ -f "$spec" ]; then
-                    dest="$TARGET_DIR/docs/specs/$(basename "$spec")"
+                    dest="$TARGET_DIR/workflow/specs/$(basename "$spec")"
                     copy_with_check "$spec" "$dest" "Specification template"
                 fi
             done
         fi
         
         # Copy docs README
-        if [ -f "$SCRIPT_DIR/docs/README.md" ]; then
-            copy_with_check "$SCRIPT_DIR/docs/README.md" \
-                          "$TARGET_DIR/docs/README.md" \
+        if [ -f "$SCRIPT_DIR/workflow/README.md" ]; then
+            copy_with_check "$SCRIPT_DIR/workflow/README.md" \
+                          "$TARGET_DIR/workflow/README.md" \
                           "Documentation guide"
         fi
         
         # Copy CONTEXT template files
-        if [ -f "$SCRIPT_DIR/docs/CONTEXT-tier2-component.md" ]; then
-            copy_with_check "$SCRIPT_DIR/docs/CONTEXT-tier2-component.md" \
-                          "$TARGET_DIR/docs/CONTEXT-tier2-component.md" \
+        if [ -f "$SCRIPT_DIR/workflow/CONTEXT-tier2-component.md" ]; then
+            copy_with_check "$SCRIPT_DIR/workflow/CONTEXT-tier2-component.md" \
+                          "$TARGET_DIR/workflow/CONTEXT-tier2-component.md" \
                           "Tier 2 documentation template"
         fi
         
-        if [ -f "$SCRIPT_DIR/docs/CONTEXT-tier3-feature.md" ]; then
-            copy_with_check "$SCRIPT_DIR/docs/CONTEXT-tier3-feature.md" \
-                          "$TARGET_DIR/docs/CONTEXT-tier3-feature.md" \
+        if [ -f "$SCRIPT_DIR/workflow/CONTEXT-tier3-feature.md" ]; then
+            copy_with_check "$SCRIPT_DIR/workflow/CONTEXT-tier3-feature.md" \
+                          "$TARGET_DIR/workflow/CONTEXT-tier3-feature.md" \
                           "Tier 3 documentation template"
         fi
     fi
     
     # Create CLAUDE.md from template if it doesn't exist
-    if [ ! -f "$TARGET_DIR/CLAUDE.md" ] && [ -f "$SCRIPT_DIR/docs/CLAUDE.md" ]; then
-        cp "$SCRIPT_DIR/docs/CLAUDE.md" "$TARGET_DIR/CLAUDE.md"
+    if [ ! -f "$TARGET_DIR/CLAUDE.md" ] && [ -f "$SCRIPT_DIR/workflow/CLAUDE.md" ]; then
+        cp "$SCRIPT_DIR/workflow/CLAUDE.md" "$TARGET_DIR/CLAUDE.md"
         print_color "$GREEN" "✓ Created CLAUDE.md from template"
     else
         if [ -f "$TARGET_DIR/CLAUDE.md" ]; then
@@ -529,8 +550,8 @@ copy_framework_files() {
     
     # Create MCP-ASSISTANT-RULES.md from template if Gemini is selected
     if [ "$INSTALL_GEMINI" = "y" ]; then
-        if [ ! -f "$TARGET_DIR/MCP-ASSISTANT-RULES.md" ] && [ -f "$SCRIPT_DIR/docs/MCP-ASSISTANT-RULES.md" ]; then
-            cp "$SCRIPT_DIR/docs/MCP-ASSISTANT-RULES.md" "$TARGET_DIR/MCP-ASSISTANT-RULES.md"
+        if [ ! -f "$TARGET_DIR/MCP-ASSISTANT-RULES.md" ] && [ -f "$SCRIPT_DIR/workflow/MCP-ASSISTANT-RULES.md" ]; then
+            cp "$SCRIPT_DIR/workflow/MCP-ASSISTANT-RULES.md" "$TARGET_DIR/MCP-ASSISTANT-RULES.md"
             print_color "$GREEN" "✓ Created MCP-ASSISTANT-RULES.md from template"
         else
             if [ -f "$TARGET_DIR/MCP-ASSISTANT-RULES.md" ]; then
@@ -540,7 +561,23 @@ copy_framework_files() {
     else
         print_color "$YELLOW" "→ Skipped MCP-ASSISTANT-RULES.md (Gemini not selected)"
     fi
-    
+
+    # Copy AGENTS.md if Beads is selected
+    if [ "$INSTALL_BEADS" = "y" ]; then
+        if [ -f "$SCRIPT_DIR/workflow/AGENTS.md" ]; then
+            copy_with_check "$SCRIPT_DIR/workflow/AGENTS.md" \
+                          "$TARGET_DIR/AGENTS.md" \
+                          "Agent instructions for beads"
+        fi
+
+        # Copy beads session check hook
+        if [ -f "$SCRIPT_DIR/hooks/beads-session-check.sh" ]; then
+            copy_with_check "$SCRIPT_DIR/hooks/beads-session-check.sh" \
+                          "$TARGET_DIR/.claude/hooks/beads-session-check.sh" \
+                          "Beads session check hook"
+        fi
+    fi
+
     print_color "$GREEN" "✓ Framework files copied"
 }
 
@@ -677,7 +714,25 @@ EOF
     ]
 EOF
     fi
-    
+
+    # Add beads session check hook if Beads is enabled
+    if [ "$INSTALL_BEADS" = "y" ]; then
+        [ ${#pretooluse_hooks[@]} -gt 0 ] || [ "$INSTALL_NOTIFICATIONS" = "y" ] && echo "," >> "$config_file"
+        cat >> "$config_file" << EOF
+    "SessionStart": [
+      {
+        "matcher": "",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "bash $TARGET_DIR/.claude/hooks/beads-session-check.sh"
+          }
+        ]
+      }
+    ]
+EOF
+    fi
+
     cat >> "$config_file" << EOF
 
   }
@@ -695,25 +750,38 @@ display_mcp_info() {
         echo
         echo "To complete the setup, you need to install the MCP servers you selected:"
         echo
-        
+
         if [ "$INSTALL_CONTEXT7" = "y" ]; then
             print_color "$YELLOW" "Context7 MCP Server:"
             echo "  Repository: https://github.com/upstash/context7"
             echo "  Documentation: See the Context7 README for setup instructions"
             echo
         fi
-        
+
         if [ "$INSTALL_GEMINI" = "y" ]; then
             print_color "$YELLOW" "Gemini MCP Server:"
-            echo "  Repository: https://github.com/peterkrueck/mcp-gemini-assistant"
+            echo "  Repository: https://github.com/mishagin-dev/mcp-gemini-assistant"
             echo "  Documentation: See the MCP Gemini Assistant README for setup instructions"
             echo
         fi
-        
+
         echo "After installing the MCP servers, add their configuration to:"
         print_color "$BLUE" "  $TARGET_DIR/.claude/settings.local.json"
         echo
         echo "Add a 'mcpServers' section with the appropriate server configurations."
+    fi
+
+    # Beads task tracker info
+    if [ "$INSTALL_BEADS" = "y" ]; then
+        echo
+        print_color "$BLUE" "=== Beads Task Tracker Setup ==="
+        echo
+        print_color "$YELLOW" "Beads Task Tracker:"
+        echo "  Install CLI: brew install beads OR npm install -g @beads/bd"
+        echo "  Initialize: cd $TARGET_DIR && bd init"
+        echo "  Commands: /bd:ready, /bd:create, /bd:show, /bd:update, /bd:close, /bd:dep"
+        echo "  Documentation: https://github.com/steveyegge/beads"
+        echo
     fi
 }
 
@@ -728,7 +796,7 @@ show_next_steps() {
     
     echo "${step_num}. Customize your project context:"
     echo "   - Edit: $TARGET_DIR/CLAUDE.md"
-    echo "   - Update project structure in: $TARGET_DIR/docs/ai-context/project-structure.md"
+    echo "   - Update project structure in: $TARGET_DIR/workflow/ai-context/project-structure.md"
     echo
     ((step_num++))
     
@@ -745,7 +813,16 @@ show_next_steps() {
         echo
         ((step_num++))
     fi
-    
+
+    if [ "$INSTALL_BEADS" = "y" ]; then
+        echo "${step_num}. Initialize Beads task tracking:"
+        echo "   cd $TARGET_DIR"
+        echo "   brew install beads  # or: npm install -g @beads/bd"
+        echo "   bd init"
+        echo
+        ((step_num++))
+    fi
+
     echo "${step_num}. Test your installation:"
     echo "   - Run: claude"
     echo "   - Then: /full-context \"analyze my project structure\""
@@ -761,8 +838,8 @@ show_next_steps() {
     
     echo "${step_num}. Documentation Templates:"
     print_color "$CYAN" "   The framework includes documentation templates:"
-    echo "   - $TARGET_DIR/docs/CONTEXT-tier2-component.md"
-    echo "   - $TARGET_DIR/docs/CONTEXT-tier3-feature.md"
+    echo "   - $TARGET_DIR/workflow/CONTEXT-tier2-component.md"
+    echo "   - $TARGET_DIR/workflow/CONTEXT-tier3-feature.md"
     echo
     echo "   These are TEMPLATES. To use them:"
     echo "   • Copy to your component/feature directories and rename to CONTEXT.md"
@@ -772,7 +849,7 @@ show_next_steps() {
     print_color "$BLUE" "For documentation and examples, see:"
     echo "  - Commands: $TARGET_DIR/.claude/commands/README.md"
     echo "  - Hooks: $TARGET_DIR/.claude/hooks/README.md"
-    echo "  - Docs: $TARGET_DIR/docs/README.md"
+    echo "  - Docs: $TARGET_DIR/workflow/README.md"
 }
 
 # Main execution

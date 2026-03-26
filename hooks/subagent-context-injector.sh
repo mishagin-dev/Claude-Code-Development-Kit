@@ -39,9 +39,9 @@ current_prompt=$(echo "$INPUT_JSON" | jq -r '.tool_input.prompt // ""')
 context_injection="## Auto-Loaded Project Context
 
 This sub-agent has automatic access to the following project documentation:
-- @$PROJECT_ROOT/docs/CLAUDE.md (Project overview, coding standards, and AI instructions)
-- @$PROJECT_ROOT/docs/ai-context/project-structure.md (Complete file tree and tech stack)
-- @$PROJECT_ROOT/docs/ai-context/docs-overview.md (Documentation architecture)
+- @$PROJECT_ROOT/workflow/CLAUDE.md (Project overview, coding standards, and AI instructions)
+- @$PROJECT_ROOT/workflow/ai-context/project-structure.md (Complete file tree and tech stack)
+- @$PROJECT_ROOT/workflow/ai-context/docs-overview.md (Documentation architecture)
 
 These files provide essential context about the project structure, 
 conventions, and development patterns. Reference them as needed for your task.

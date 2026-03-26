@@ -23,7 +23,8 @@ log_security_event() {
     local details="$2"
     local tool_name="${3:-unknown}"
     local timestamp=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
-    echo "{\"timestamp\": \"$timestamp\", \"tool\": \"$tool_name\", \"event\": \"$event_type\", \"details\": \"$details\"}" >> "$LOG_FILE"
+    jq -n --arg ts "$timestamp" --arg tool "$tool_name" --arg event "$event_type" --arg details "$details" \
+        '{timestamp: $ts, tool: $tool, event: $event, details: $details}' >> "$LOG_FILE"
 }
 
 # Function to check if content matches sensitive patterns
@@ -32,26 +33,25 @@ check_sensitive_content() {
     local pattern_type="$2"
     
     # Get patterns from JSON config
-    local patterns=$(jq -r ".patterns.$pattern_type[]" "$PATTERNS_FILE" 2>/dev/null || echo "")
-    
-    for pattern in $patterns; do
+    local whitelisted
+    while IFS= read -r pattern; do
+        [[ -z "$pattern" ]] && continue
         if echo "$content" | grep -qiE "$pattern"; then
             # Check whitelist
-            local whitelisted=false
-            local whitelist_patterns=$(jq -r '.whitelist.allowed_mentions[]' "$PATTERNS_FILE" 2>/dev/null || echo "")
-            
-            for whitelist in $whitelist_patterns; do
-                if echo "$content" | grep -qF "$whitelist"; then
+            whitelisted=false
+            while IFS= read -r whitelist_entry; do
+                [[ -z "$whitelist_entry" ]] && continue
+                if echo "$content" | grep -qF "$whitelist_entry"; then
                     whitelisted=true
                     break
                 fi
-            done
-            
+            done < <(jq -r '.whitelist.allowed_mentions[]' "$PATTERNS_FILE" 2>/dev/null)
+
             if [[ "$whitelisted" == "false" ]]; then
                 return 0  # Found sensitive data
             fi
         fi
-    done
+    done < <(jq -r ".patterns.$pattern_type[]" "$PATTERNS_FILE" 2>/dev/null)
     
     return 1  # No sensitive data found
 }

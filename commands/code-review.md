@@ -23,8 +23,8 @@ Minor style issues, micro-optimizations (<10%), theoretical best practices, edge
 
 ## Auto-Loaded Project Context:
 @/CLAUDE.md
-@/docs/ai-context/project-structure.md
-@/docs/ai-context/docs-overview.md
+@/workflow/ai-context/project-structure.md
+@/workflow/ai-context/docs-overview.md
 
 
 ## Command Execution
@@ -47,7 +47,7 @@ Examples of intent parsing:
 
 #### Read Relevant Documentation
 Before allocating agents, **read the documentation** to understand:
-1. Use `/docs/ai-context/docs-overview.md` to identify relevant docs
+1. Use `/workflow/ai-context/docs-overview.md` to identify relevant docs
 2. Read documentation related to the code being reviewed:
    - Architecture docs for subsystem understanding
    - API documentation for integration points

@@ -133,7 +133,7 @@ Document planned technology additions:
 │   ├── tests/                          # Frontend tests
 │   ├── [BUILD-CONFIG]                  # Build configuration
 │   └── [PACKAGE-FILE]                  # Package configuration
-├── docs/                               # Documentation
+├── workflow/                               # Documentation
 │   ├── ai-context/                     # AI-specific documentation
 │   │   ├── project-structure.md        # This file
 │   │   ├── docs-overview.md            # Documentation architecture

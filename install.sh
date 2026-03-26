@@ -8,7 +8,7 @@
 set -euo pipefail
 
 # Configuration
-REPO_OWNER="peterkrueck"
+REPO_OWNER="mishagin-dev"
 REPO_NAME="Claude-Code-Development-Kit"
 BRANCH="main"
 
@@ -32,7 +32,7 @@ spinner() {
     local pid=$1
     local delay=0.1
     local spinstr='⠋⠙⠹⠸⠼⠴⠦⠧⠇⠏'
-    while [ "$(ps a | awk '{print $1}' | grep $pid)" ]; do
+    while kill -0 "$pid" 2>/dev/null; do
         local temp=${spinstr#?}
         printf " [%c]  " "$spinstr"
         local spinstr=$temp${spinstr%"$temp"}
@@ -43,7 +43,7 @@ spinner() {
 }
 
 # Print banner
-clear
+echo
 print_color "$BLUE" "╔═══════════════════════════════════════════════╗"
 print_color "$BLUE" "║                                               ║"
 print_color "$BLUE" "║    🚀 Claude Code Development Kit Installer  ║"

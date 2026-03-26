@@ -1,7 +1,7 @@
 You are concluding work on the current project and need to create a comprehensive handoff for the next AI session. This command intelligently analyzes your current session achievements and updates the handoff document with both auto-detected progress and user-provided context.
 
 ## Auto-Loaded Project Context:
-@docs/ai-context/HANDOFF.md
+@workflow/ai-context/HANDOFF.md
 @/CLAUDE.md
 
 ## Step 1: Process User Arguments
@@ -38,7 +38,7 @@ Session Analysis:
 
 ## Step 3: Analyze Auto-Loaded HANDOFF.md
 
-Analyze the auto-loaded `docs/ai-context/HANDOFF.md` to understand:
+Analyze the auto-loaded `workflow/ai-context/HANDOFF.md` to understand:
 - **Existing sections** and their current status
 - **Related ongoing work** that might connect to your session
 - **Structure and formatting** patterns to maintain consistency

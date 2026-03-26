@@ -2,8 +2,8 @@ You have just completed work on the current project. Analyze changes based on th
 
 ## Auto-Loaded Project Context:
 @/CLAUDE.md
-@/docs/ai-context/project-structure.md
-@/docs/ai-context/docs-overview.md
+@/workflow/ai-context/project-structure.md
+@/workflow/ai-context/docs-overview.md
 
 ## Core Documentation Principle: Document Current State Only
 
@@ -82,8 +82,8 @@ Detected changes: [1-2 sentence summary of main work done]
 
 Analyze the auto-loaded foundational files:
 1. `/CLAUDE.md` - **CRITICAL:** Understand AI instructions, coding standards, and development protocols that govern the project
-2. `/docs/ai-context/project-structure.md` - **FOUNDATION:** Technology stack, complete file tree and architecture overview
-3. `/docs/ai-context/docs-overview.md` - Understand:
+2. `/workflow/ai-context/project-structure.md` - **FOUNDATION:** Technology stack, complete file tree and architecture overview
+3. `/workflow/ai-context/docs-overview.md` - Understand:
    - What documentation files exist and their purposes
    - How the documentation is organized
    - Which types of changes map to which documentation
@@ -201,7 +201,7 @@ Before updating existing documentation, assess if new documentation files should
 
 **File Creation Process:**
 1. **Create the new CONTEXT.md file** with placeholder content following the pattern of existing granular docs
-2. **Update `/docs/ai-context/docs-overview.md`** to include the new file in the appropriate tier
+2. **Update `/workflow/ai-context/docs-overview.md`** to include the new file in the appropriate tier
 3. **Document the addition** in the current update process
 
 ### File Content Template for New Granular CONTEXT.md:
@@ -245,13 +245,13 @@ Before updating existing documentation, assess if new documentation files should
 ### Tier 1 (Foundational) - CASCADE UP
 **Finally, check if foundational documentation needs updates for system-wide impacts:**
 
-#### Project Structure Updates (`/docs/ai-context/project-structure.md`)
+#### Project Structure Updates (`/workflow/ai-context/project-structure.md`)
 Update for any of these changes:
 - **File tree changes**: Created, moved, deleted files/directories; renamed components; restructured organization
 - **Technology stack updates**: New dependencies (check pyproject.toml, package.json), major version updates, new frameworks, AI service changes, development tool modifications
 
 #### Other Foundational Documentation
-Update other `/docs/ai-context/` files if changes affect:
+Update other `/workflow/ai-context/` files if changes affect:
 - **System-wide architectural patterns**
 - **Cross-component integration approaches**
 - **Development workflow or standards**
@@ -274,7 +274,7 @@ Update other `/docs/ai-context/` files if changes affect:
 ## Step 9: Update Documentation Overview
 
 **IMPORTANT:** After updating any documentation files in steps 1-8, check if the documentation overview needs updates:
-- Reference the auto-loaded `/docs/ai-context/docs-overview.md`
+- Reference the auto-loaded `/workflow/ai-context/docs-overview.md`
 - If you added new documentation files (especially new CONTEXT.md files), update the overview to include them in the appropriate tier
 - If you significantly changed the structure/purpose of existing documentation, update the overview to reflect these changes
 - Keep the overview accurate and current so it serves as a reliable guide to the documentation architecture

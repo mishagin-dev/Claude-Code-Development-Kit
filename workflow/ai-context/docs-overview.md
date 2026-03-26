@@ -20,10 +20,10 @@ This hierarchy allows AI agents to load targeted context efficiently while maint
 ## Tier 1: Foundational Documentation (System-Wide)
 
 - **[Master Context](/CLAUDE.md)** - *Essential for every session.* Coding standards, security requirements, MCP server integration patterns, and development protocols
-- **[Project Structure](/docs/ai-context/project-structure.md)** - *REQUIRED reading.* Complete technology stack, file tree, and system architecture. Must be attached to Gemini consultations
-- **[System Integration](/docs/ai-context/system-integration.md)** - *For cross-component work.* Communication patterns, data flow, testing strategies, and performance optimization
-- **[Deployment Infrastructure](/docs/ai-context/deployment-infrastructure.md)** - *Infrastructure patterns.* Containerization, monitoring, CI/CD workflows, and scaling strategies
-- **[Task Management](/docs/ai-context/handoff.md)** - *Session continuity.* Current tasks, documentation system progress, and next session goals
+- **[Project Structure](/workflow/ai-context/project-structure.md)** - *REQUIRED reading.* Complete technology stack, file tree, and system architecture. Must be attached to Gemini consultations
+- **[System Integration](/workflow/ai-context/system-integration.md)** - *For cross-component work.* Communication patterns, data flow, testing strategies, and performance optimization
+- **[Deployment Infrastructure](/workflow/ai-context/deployment-infrastructure.md)** - *Infrastructure patterns.* Containerization, monitoring, CI/CD workflows, and scaling strategies
+- **[Task Management](/workflow/ai-context/handoff.md)** - *Session continuity.* Current tasks, documentation system progress, and next session goals
 
 ## Tier 2: Component-Level Documentation
 
@@ -40,6 +40,21 @@ This hierarchy allows AI agents to load targeted context efficiently while maint
 ### Infrastructure Components
 - **[Infrastructure Code](/infrastructure/CONTEXT.md)** - *IaC patterns.* Terraform/CloudFormation templates, resource definitions, and deployment automation
 - **[Monitoring Setup](/monitoring/CONTEXT.md)** - *Observability patterns.* Metrics collection, alerting rules, and dashboard configurations
+
+## Testing Documentation
+
+Specialized documentation for testing patterns and quality assurance:
+
+- **[Testing Context Template](/workflow/CONTEXT-testing.md)** - *Testing patterns and conventions.* Framework configuration, test structure, mocking strategies, and coverage requirements
+
+### Test-Related Commands
+- `/test` - Multi-agent test generation and execution
+- `/test-coverage` - Deep coverage analysis and gap identification
+
+### Testing Hooks
+- `test-runner-hook.sh` - Pre-commit test validation
+- `test-context-injector.sh` - Auto-inject testing context to test-related tasks
+- `test-watcher.sh` - Continuous testing feedback on file changes
 
 ## Tier 3: Feature-Specific Documentation
 

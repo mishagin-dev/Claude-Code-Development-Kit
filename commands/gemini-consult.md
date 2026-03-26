@@ -63,8 +63,8 @@ Include relevant documentation insights in your Gemini consultation for more acc
 ```python
 foundational_files = [
     "MCP-ASSISTANT-RULES.md",  # If exists
-    "docs/ai-context/project-structure.md",
-    "docs/ai-context/docs-overview.md"
+    "workflow/ai-context/project-structure.md",
+    "workflow/ai-context/docs-overview.md"
 ]
 
 session = mcp__gemini__consult_gemini(
@@ -74,8 +74,8 @@ session = mcp__gemini__consult_gemini(
     attached_files=foundational_files + [problem_specific_files],
     file_descriptions={
         "MCP-ASSISTANT-RULES.md": "Project vision and coding standards",
-        "docs/ai-context/project-structure.md": "Complete tech stack and file structure",
-        "docs/ai-context/docs-overview.md": "Documentation architecture",
+        "workflow/ai-context/project-structure.md": "Complete tech stack and file structure",
+        "workflow/ai-context/docs-overview.md": "Documentation architecture",
         # Add problem-specific descriptions
     },
     preferred_approach="[solution/review/debug/optimize/explain]"

@@ -2,8 +2,8 @@ You are working on the current project. The user has requested to create or rege
 
 ## Auto-Loaded Project Context:
 @/CLAUDE.md
-@/docs/ai-context/project-structure.md
-@/docs/ai-context/docs-overview.md
+@/workflow/ai-context/project-structure.md
+@/workflow/ai-context/docs-overview.md
 
 ## CRITICAL: AI-Optimized Documentation Principles
 All documentation must be optimized for AI consumption and future-proofing:
@@ -183,7 +183,7 @@ Think deeply about synthesizing findings and generating comprehensive documentat
 
 #### Update Project Structure (if needed)
 **If new directories were created:**
-- Update file tree in `/docs/ai-context/project-structure.md`
+- Update file tree in `/workflow/ai-context/project-structure.md`
 - Add directory comments explaining purpose
 - Maintain tree structure formatting and organization
 
@@ -195,7 +195,7 @@ Think deeply about synthesizing findings and generating comprehensive documentat
 **Action**: Compare discovered code patterns against foundational documentation to identify inconsistencies and improvement opportunities.
 
 #### Process
-1. **Discover Tier 1 Files**: Read `/docs/ai-context/docs-overview.md` to identify all foundational documentation files
+1. **Discover Tier 1 Files**: Read `/workflow/ai-context/docs-overview.md` to identify all foundational documentation files
 2. **Read Foundational Docs**: Load discovered Tier 1 files to understand documented architecture
 3. **Cross-Tier Analysis**: Using analysis findings from previous steps, compare:
    - **Technology Stack**: Discovered frameworks/tools vs documented stack

@@ -1,7 +1,7 @@
 # Claude Code Development Kit
 
 [![License](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
-[![Changelog](https://img.shields.io/badge/changelog-v2.1.0-orange.svg)](CHANGELOG.md)
+[![Changelog](https://img.shields.io/badge/changelog-v2.4.0-orange.svg)](CHANGELOG.md)
 
 An integrated system that transforms Claude Code into an orchestrated development environment through automated documentation management, multi-agent workflows, and external AI expertise.
 
@@ -90,7 +90,7 @@ Claude Code's output quality directly depends on what it knows about your projec
 ### Prerequisites
 
 - **Required**: [Claude Code](https://github.com/anthropics/claude-code)
-- **Recommended**: MCP servers like [Context7](https://github.com/upstash/context7) and [Gemini Assistant](https://github.com/peterkrueck/mcp-gemini-assistant)
+- **Recommended**: MCP servers like [Context7](https://github.com/upstash/context7) and [Gemini Assistant](https://github.com/mishagin-dev/mcp-gemini-assistant)
 
 #### Platform Support
 
@@ -103,7 +103,7 @@ Claude Code's output quality directly depends on what it knows about your projec
 Run this single command in your terminal:
 
 ```bash
-curl -fsSL https://raw.githubusercontent.com/peterkrueck/Claude-Code-Development-Kit/main/install.sh | bash
+curl -fsSL https://raw.githubusercontent.com/mishagin-dev/Claude-Code-Development-Kit/main/install.sh | bash
 ```
 
 This will:
@@ -119,7 +119,7 @@ https://github.com/user-attachments/assets/0b4a1e69-bddb-4b58-8de9-35f97919bf44
 #### Option 2: Clone and Install
 
 ```bash
-git clone https://github.com/peterkrueck/Claude-Code-Development-Kit.git
+git clone https://github.com/mishagin-dev/Claude-Code-Development-Kit.git
 cd Claude-Code-Development-Kit
 ./setup.sh
 ```
@@ -137,7 +137,7 @@ your-project/
 │   │   ├── sounds/        # Notification sounds (if notifications enabled)
 │   │   └── *.sh           # Hook scripts (based on your selections)
 │   └── settings.local.json # Generated Claude Code configuration
-├── docs/                  # Documentation templates and examples
+├── workflow/                  # Documentation templates and examples
 │   ├── ai-context/        # Core documentation files
 │   ├── open-issues/       # Issue tracking examples
 │   ├── specs/             # Specification templates
@@ -154,7 +154,7 @@ your-project/
 
 1. **Customize your AI context**:
    - Edit `CLAUDE.md` with your project standards
-   - Update `docs/ai-context/project-structure.md` with your tech stack
+   - Update `workflow/ai-context/project-structure.md` with your tech stack
 
 2. **Install MCP servers** (if selected during setup):
    - Follow the links provided by the installer
@@ -165,6 +165,63 @@ your-project/
    claude
    /full-context "analyze my project structure"
    ```
+
+### Optional: Beads Task Tracker
+
+For multi-session projects with complex dependencies, install [Beads](https://github.com/steveyegge/beads):
+
+```bash
+# Install beads CLI
+brew install beads  # or: npm install -g @beads/bd
+
+# Initialize in project
+cd your-project
+bd init
+```
+
+**Automatic Session Start Check:**
+
+When Beads is installed, CCDK automatically checks for ready tasks at session start:
+
+```
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+📌 Beads tasks ready to work on:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+bd-abc1  Fix auth bug              (bug, p1)
+bd-def2  Implement user settings   (feature, p2)
+
+Run /bd:work to start working on a task.
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+```
+
+**Available Commands:**
+| Command | Description |
+|---------|-------------|
+| `/bd:ready` | List unblocked tasks |
+| `/bd:work` | **Start working on a ready task** (claims, executes, closes) |
+| `/bd:create "..."` | Create new task |
+| `/bd:show bd-xxx` | View task details |
+| `/bd:update bd-xxx --claim` | Claim and update tasks |
+| `/bd:close bd-xxx --reason "..."` | Complete work |
+| `/bd:dep add bd-child bd-parent` | Manage dependencies |
+
+**Workflow:**
+```bash
+# At session start — see ready tasks automatically
+# Pick a task to work on
+/bd:work bd-abc1
+
+# Or create a new task discovered during work
+/bd:create "Refactor auth middleware" -t task -p 1
+```
+
+**When to use beads vs TodoWrite:**
+| Feature | Beads | TodoWrite |
+|---------|-------|-----------|
+| Session scope | Multi-session | Single-session |
+| Dependencies | Full graph | Linear only |
+| Persistence | Survives compaction | Ephemeral |
+| Use case | Complex projects | Simple checklists |
 
 
 ## Terminology
@@ -221,8 +278,8 @@ Every command execution automatically loads critical documentation:
 
 ```
 @/CLAUDE.md                              # Master AI context and coding standards
-@/docs/ai-context/project-structure.md   # Complete technology stack and file tree
-@/docs/ai-context/docs-overview.md       # Documentation routing map
+@/workflow/ai-context/project-structure.md   # Complete technology stack and file tree
+@/workflow/ai-context/docs-overview.md       # Documentation routing map
 ```
 
 The `subagent-context-injector.sh` hook extends auto-loading to all sub-agents:
@@ -259,12 +316,16 @@ The kit includes battle-tested hooks that enhance Claude Code's capabilities:
 - **Gemini Context Injector** - Automatically includes project structure in Gemini consultations
 - **Subagent Context Injector** - Ensures all sub-agents receive core documentation automatically
 - **Notification System** - Provides non-blocking audio feedback for task completion and input requests (optional)
+- **Test Runner** - Validates tests pass before git commits (optional)
+- **Test Context Injector** - Enriches test-related tasks with framework-specific patterns
+- **Test Watcher** - Runs related tests automatically when files change (optional)
 
 These hooks integrate seamlessly with the command and MCP server workflows, providing:
 - Pre-execution security checks for all external AI calls
 - Automatic context enhancement for both external AI and sub-agents
 - Consistent knowledge across all agents in multi-agent workflows
 - Developer awareness through pleasant, non-blocking audio notifications
+- Continuous testing feedback during development
 
 ## Common Tasks
 
@@ -305,6 +366,28 @@ Automatically:
 - Maintains context for future AI sessions
 - Ensures documentation matches implementation
 
+### Test-Driven Development
+
+```bash
+/test "generate tests for user service"
+```
+
+The testing framework:
+1. Auto-detects your testing framework (Jest, Vitest, pytest, Go, etc.)
+2. Spawns specialized agents for unit, integration, and edge case tests
+3. Follows your project's existing test patterns
+4. Generates comprehensive, maintainable tests
+
+```bash
+/test-coverage "analyze payment module"
+```
+
+Coverage analysis:
+- Collects and analyzes coverage metrics
+- Categorizes gaps by severity (critical, high, medium, low)
+- Assesses test quality beyond line coverage
+- Provides actionable improvement recommendations
+
 ## Creating Your Project Structure
 
 After installation, you'll add your own project-specific documentation:
@@ -321,7 +404,7 @@ your-project/
 │   │   ├── notify.sh
 │   │   └── subagent-context-injector.sh
 │   └── settings.json          # Claude Code configuration
-├── docs/
+├── workflow/
 │   ├── ai-context/            # Foundation documentation (Tier 1)
 │   │   ├── docs-overview.md   # Documentation routing map
 │   │   ├── project-structure.md # Technology stack and file tree
@@ -343,9 +426,9 @@ your-project/
         └── **`CONTEXT.md`**   # Components context (Tier 3) - 🔴 create this
 ```
 
-The framework provides templates for CONTEXT.md files in `docs/`:
-- `docs/CONTEXT-tier2-component.md` - Use as template for component-level docs
-- `docs/CONTEXT-tier3-feature.md` - Use as template for feature-level docs
+The framework provides templates for CONTEXT.md files in `workflow/`:
+- `workflow/CONTEXT-tier2-component.md` - Use as template for component-level docs
+- `workflow/CONTEXT-tier3-feature.md` - Use as template for feature-level docs
 
 ## Configuration
 
@@ -355,7 +438,7 @@ The kit is designed for adaptation:
 - **Documentation** - Adjust tier structure for your architecture
 - **MCP Integration** - Add additional servers for specialized expertise
 - **Hooks** - Customize security patterns, add new hooks, or modify notifications in `.claude/hooks/`
-- **MCP Assistant Rules** - Copy `docs/MCP-ASSISTANT-RULES.md` template to project root and customize for project-specific standards
+- **MCP Assistant Rules** - Copy `workflow/MCP-ASSISTANT-RULES.md` template to project root and customize for project-specific standards
 
 ## Best Practices
 
@@ -367,9 +450,9 @@ The kit is designed for adaptation:
 
 ## Documentation
 
-- [Documentation System Guide](docs/) - Understanding the 3-tier architecture
+- [Documentation System Guide](workflow/) - Understanding the 3-tier architecture
 - [Commands Reference](commands/) - Detailed command usage
-- [MCP Integration](docs/CLAUDE.md) - Configuring external services
+- [MCP Integration](workflow/CLAUDE.md) - Configuring external services
 - [Hooks System](hooks/) - Security scanning, context injection, and notifications
 - [Changelog](CHANGELOG.md) - Version history and migration guides
 
@@ -400,7 +483,7 @@ The kit represents one approach to AI-assisted development. Contributions and ad
 **A:** Yes! The framework works well with existing projects. When installing, check if you already have a project structure or CLAUDE.md file and adjust accordingly during the setup prompts. To get started with an existing codebase, use Claude Code with sub-agents to understand your project and create the initial project-structure.md:
 
 ```
-"Read and understand the project_structure.md template in docs/ai-context/project_structure.md. Your task is to fill out this template with our project's details. For this send out sub agents in parallel across the whole code base. Once the sub agents get back, ultrathink and create the markdown file."
+"Read and understand the project_structure.md template in workflow/ai-context/project_structure.md. Your task is to fill out this template with our project's details. For this send out sub agents in parallel across the whole code base. Once the sub agents get back, ultrathink and create the markdown file."
 ```
 
 After creating the project structure, use the framework's documentation generation system to create component-level and feature-level context files:
@@ -412,5 +495,3 @@ After creating the project structure, use the framework's documentation generati
 This approach lets the framework learn your existing architecture and systematically create appropriate documentation that matches your current project structure.
 
 ## Connect
-
-Feel free to connect with me on [LinkedIn](https://www.linkedin.com/in/peterkrueck/) if you have questions, need clarification, or wish to provide feedback.

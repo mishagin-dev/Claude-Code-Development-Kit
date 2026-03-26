@@ -1,7 +1,7 @@
 #!/bin/bash
 # Gemini Context Injector Hook
 # Automatically adds project context files to new Gemini consultation sessions:
-# - docs/ai-context/project-structure.md
+# - workflow/ai-context/project-structure.md
 # - MCP-ASSISTANT-RULES.md
 #
 # This hook enhances Gemini consultations by automatically including your project's
@@ -11,7 +11,7 @@ set -euo pipefail
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 PROJECT_ROOT="$(cd "$SCRIPT_DIR/../.." && pwd)"
-PROJECT_STRUCTURE_FILE="$PROJECT_ROOT/docs/ai-context/project-structure.md"
+PROJECT_STRUCTURE_FILE="$PROJECT_ROOT/workflow/ai-context/project-structure.md"
 MCP_RULES_FILE="$PROJECT_ROOT/MCP-ASSISTANT-RULES.md"
 LOG_FILE="$SCRIPT_DIR/../logs/context-injection.log"
 
@@ -26,7 +26,8 @@ log_injection_event() {
     local event_type="$1"
     local details="$2"
     local timestamp=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
-    echo "{\"timestamp\": \"$timestamp\", \"event\": \"$event_type\", \"details\": \"$details\"}" >> "$LOG_FILE"
+    jq -n --arg ts "$timestamp" --arg event "$event_type" --arg details "$details" \
+        '{timestamp: $ts, event: $event, details: $details}' >> "$LOG_FILE"
 }
 
 # Main logic
