@@ -554,6 +554,12 @@ copy_framework_files() {
     if [ ! -f "$TARGET_DIR/CLAUDE.md" ] && [ -f "$SCRIPT_DIR/workflow/CLAUDE.md" ]; then
         cp "$SCRIPT_DIR/workflow/CLAUDE.md" "$TARGET_DIR/CLAUDE.md"
         print_color "$GREEN" "✓ Created CLAUDE.md from template"
+
+        # Append Beads section if Beads is selected
+        if [ "$INSTALL_BEADS" = "y" ] && [ -f "$SCRIPT_DIR/workflow/ai-context/beads-section.md" ]; then
+            cat "$SCRIPT_DIR/workflow/ai-context/beads-section.md" >> "$TARGET_DIR/CLAUDE.md"
+            print_color "$GREEN" "✓ Added Beads task management section to CLAUDE.md"
+        fi
     else
         if [ -f "$TARGET_DIR/CLAUDE.md" ]; then
             print_color "$YELLOW" "→ Preserved existing CLAUDE.md"
@@ -574,20 +580,11 @@ copy_framework_files() {
         print_color "$YELLOW" "→ Skipped MCP-ASSISTANT-RULES.md (Gemini not selected)"
     fi
 
-    # Copy AGENTS.md if Beads is selected
-    if [ "$INSTALL_BEADS" = "y" ]; then
-        if [ -f "$SCRIPT_DIR/workflow/AGENTS.md" ]; then
-            copy_with_check "$SCRIPT_DIR/workflow/AGENTS.md" \
-                          "$TARGET_DIR/AGENTS.md" \
-                          "Agent instructions for beads"
-        fi
-
-        # Copy beads session check hook
-        if [ -f "$SCRIPT_DIR/hooks/beads-session-check.sh" ]; then
-            copy_with_check "$SCRIPT_DIR/hooks/beads-session-check.sh" \
-                          "$TARGET_DIR/.claude/hooks/beads-session-check.sh" \
-                          "Beads session check hook"
-        fi
+    # Copy beads session check hook if Beads is selected
+    if [ "$INSTALL_BEADS" = "y" ] && [ -f "$SCRIPT_DIR/hooks/beads-session-check.sh" ]; then
+        copy_with_check "$SCRIPT_DIR/hooks/beads-session-check.sh" \
+                      "$TARGET_DIR/.claude/hooks/beads-session-check.sh" \
+                      "Beads session check hook"
     fi
 
     print_color "$GREEN" "✓ Framework files copied"
