@@ -226,9 +226,21 @@ get_target_directory() {
             TARGET_DIR="$(pwd)"
         fi
     else
-        TARGET_DIR="$(cd "$input_dir" 2>/dev/null && pwd)" || {
-            print_color "$RED" "❌ Directory '$input_dir' does not exist"
-            exit 1
+        # For relative paths, resolve from the original PWD (if run via installer)
+        if [[ "$input_dir" != /* ]] && [ -n "${INSTALLER_ORIGINAL_PWD:-}" ]; then
+            TARGET_DIR="$INSTALLER_ORIGINAL_PWD/$input_dir"
+        else
+            # For absolute paths or when running directly
+            if [[ "$input_dir" = /* ]]; then
+                TARGET_DIR="$input_dir"
+            else
+                TARGET_DIR="$(pwd)/$input_dir"
+            fi
+        fi
+        # Normalize the path (remove . and .., trailing slashes)
+        TARGET_DIR="$(cd "$TARGET_DIR" 2>/dev/null && pwd)" || {
+            # Directory doesn't exist yet - construct absolute path manually
+            TARGET_DIR="$(cd "$(dirname "$TARGET_DIR")" 2>/dev/null && pwd)/$(basename "$TARGET_DIR")"
         }
     fi
 

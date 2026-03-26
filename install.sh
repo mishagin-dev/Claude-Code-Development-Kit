@@ -43,7 +43,7 @@ spinner() {
 }
 
 # Print banner
-echo
+clear
 print_color "$BLUE" "╔═══════════════════════════════════════════════╗"
 print_color "$BLUE" "║                                               ║"
 print_color "$BLUE" "║    🚀 Claude Code Development Kit Installer  ║"
