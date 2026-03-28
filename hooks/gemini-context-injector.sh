@@ -12,7 +12,7 @@ set -euo pipefail
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 PROJECT_ROOT="$(cd "$SCRIPT_DIR/../.." && pwd)"
 PROJECT_STRUCTURE_FILE="$PROJECT_ROOT/workflow/ai-context/project-structure.md"
-MCP_RULES_FILE="$PROJECT_ROOT/MCP-ASSISTANT-RULES.md"
+MCP_RULES_FILE="$PROJECT_ROOT/workflow/addons/MCP-ASSISTANT-RULES.md"
 LOG_FILE="$SCRIPT_DIR/../logs/context-injection.log"
 
 # Ensure log directory exists
