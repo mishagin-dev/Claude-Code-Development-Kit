@@ -170,14 +170,12 @@ your-project/
 
 For multi-session projects with complex dependencies, install [Beads](https://github.com/steveyegge/beads):
 
-```bash
-# Install beads CLI
-brew install beads  # or: npm install -g @beads/bd
+**Prerequisites**: You need one of: `brew`, `npm`, `pnpm`, or `yarn`. The installer checks this automatically.
 
-# Initialize in project
-cd your-project
-bd init
-```
+When you select Beads during setup, CCDK:
+1. Installs the `bd` CLI via your package manager
+2. Runs `bd init --stealth --quiet` in your project
+3. Generates `workflow/addons/BEADS.md` for AI agent context
 
 **Automatic Session Start Check:**
 
