@@ -1,7 +1,7 @@
 # Claude Code Development Kit
 
 [![License](https://img.shields.io/badge/license-MIT-green.svg)](LICENSE)
-[![Changelog](https://img.shields.io/badge/changelog-v2.4.0-orange.svg)](CHANGELOG.md)
+[![Changelog](https://img.shields.io/badge/changelog-v2.5.0-orange.svg)](CHANGELOG.md)
 
 An integrated system that transforms Claude Code into an orchestrated development environment through automated documentation management, multi-agent workflows, and external AI expertise.
 
@@ -151,7 +151,7 @@ your-project/
 ├── CLAUDE.md              # Your project's AI context (from template)
 ```
 
-**Note**: The exact files installed depend on your choices during setup (MCP servers, notifications, etc.)
+**Note**: The exact files installed depend on your choices during setup (MCP servers, notifications, Beads, etc.)
 
 ### Post-Installation Setup
 
@@ -416,7 +416,6 @@ your-project/
 │   ├── specs/                 # Feature specifications
 │   └── README.md              # Documentation system guide
 ├── CLAUDE.md                  # Master AI context (Tier 1)
-├── MCP-ASSISTANT-RULES.md     # MCP coding standards (if Gemini selected)
 ├── backend/
 │   ├── **`CONTEXT.md`**       # Backend context (Tier 2) - 🔴 create this
 │   └── src/api/
@@ -439,7 +438,7 @@ The kit is designed for adaptation:
 - **Documentation** - Adjust tier structure for your architecture
 - **MCP Integration** - Add additional servers for specialized expertise
 - **Hooks** - Customize security patterns, add new hooks, or modify notifications in `.claude/hooks/`
-- **MCP Assistant Rules** - Copy `workflow/MCP-ASSISTANT-RULES.md` template to project root and customize for project-specific standards
+- **MCP Assistant Rules** - Customize `workflow/addons/MCP-ASSISTANT-RULES.md` for project-specific standards
 
 ## Best Practices
 
