@@ -28,6 +28,8 @@ OS=""
 AUDIO_PLAYER=""
 OVERWRITE_ALL="n"
 SKIP_ALL="n"
+BEADS_AVAILABLE="n"
+BEADS_PACKAGE_MANAGER=""
 
 # Print colored output
 print_color() {
@@ -178,6 +180,24 @@ check_required_tools() {
     print_color "$GREEN" "✓ All required tools are available"
 }
 
+# Check if beads can be installed (requires brew/npm/pnpm/yarn)
+check_beads_prerequisites() {
+    # Check for available package managers
+    if command -v brew &> /dev/null; then
+        BEADS_AVAILABLE="y"
+        BEADS_PACKAGE_MANAGER="brew"
+    elif command -v npm &> /dev/null; then
+        BEADS_AVAILABLE="y"
+        BEADS_PACKAGE_MANAGER="npm"
+    elif command -v pnpm &> /dev/null; then
+        BEADS_AVAILABLE="y"
+        BEADS_PACKAGE_MANAGER="pnpm"
+    elif command -v yarn &> /dev/null; then
+        BEADS_AVAILABLE="y"
+        BEADS_PACKAGE_MANAGER="yarn"
+    fi
+}
+
 # Detect operating system
 detect_os() {
     case "$(uname -s)" in
@@ -277,11 +297,18 @@ prompt_optional_components() {
     echo
 
     # Beads Task Tracker
-    print_color "$CYAN" "Beads Task Tracker (Recommended for Multi-Session Work)"
-    echo "  Persistent task tracking with dependency graph for long-running projects"
-    echo "  Install: brew install beads OR npm install -g @beads/bd"
-    if ! safe_read_yn INSTALL_BEADS "  Install Beads integration? (y/n): "; then
-        exit 1
+    if [ "$BEADS_AVAILABLE" = "y" ]; then
+        print_color "$CYAN" "Beads Task Tracker (Recommended for Multi-Session Work)"
+        echo "  Persistent task tracking with dependency graph for long-running projects"
+        echo "  Will be installed via: $BEADS_PACKAGE_MANAGER"
+        if ! safe_read_yn INSTALL_BEADS "  Install Beads integration? (y/n): "; then
+            exit 1
+        fi
+    else
+        print_color "$YELLOW" "Beads Task Tracker — Not Available"
+        echo "  Requires one of: brew, npm, pnpm, or yarn"
+        echo "  Install a package manager to enable this option"
+        INSTALL_BEADS="n"
     fi
     echo
 
@@ -309,6 +336,7 @@ create_directories() {
     mkdir -p "$TARGET_DIR/.claude/commands"
     mkdir -p "$TARGET_DIR/.claude/hooks/config"
     mkdir -p "$TARGET_DIR/workflow/ai-context"
+    mkdir -p "$TARGET_DIR/workflow/addons"
     mkdir -p "$TARGET_DIR/workflow/open-issues"
     mkdir -p "$TARGET_DIR/workflow/specs"
     mkdir -p "$TARGET_DIR/logs"
@@ -568,11 +596,11 @@ copy_framework_files() {
 
     # Create MCP-ASSISTANT-RULES.md from template if Gemini is selected
     if [ "$INSTALL_GEMINI" = "y" ]; then
-        if [ ! -f "$TARGET_DIR/MCP-ASSISTANT-RULES.md" ] && [ -f "$SCRIPT_DIR/workflow/MCP-ASSISTANT-RULES.md" ]; then
-            cp "$SCRIPT_DIR/workflow/MCP-ASSISTANT-RULES.md" "$TARGET_DIR/MCP-ASSISTANT-RULES.md"
+        if [ ! -f "$TARGET_DIR/workflow/addons/MCP-ASSISTANT-RULES.md" ] && [ -f "$SCRIPT_DIR/workflow/addons/MCP-ASSISTANT-RULES.md" ]; then
+            cp "$SCRIPT_DIR/workflow/addons/MCP-ASSISTANT-RULES.md" "$TARGET_DIR/workflow/addons/MCP-ASSISTANT-RULES.md"
             print_color "$GREEN" "✓ Created MCP-ASSISTANT-RULES.md from template"
         else
-            if [ -f "$TARGET_DIR/MCP-ASSISTANT-RULES.md" ]; then
+            if [ -f "$TARGET_DIR/workflow/addons/MCP-ASSISTANT-RULES.md" ]; then
                 print_color "$YELLOW" "→ Preserved existing MCP-ASSISTANT-RULES.md"
             fi
         fi
@@ -751,6 +779,66 @@ EOF
     print_color "$GREEN" "✓ Configuration generated: $config_file"
 }
 
+# Initialize beads in target directory
+initialize_beads() {
+    print_color "$YELLOW" "Initializing Beads..."
+
+    # Check if beads CLI is already installed
+    if command -v bd &> /dev/null; then
+        print_color "$GREEN" "✓ Beads CLI already installed"
+    else
+        print_color "$YELLOW" "Installing Beads CLI via $BEADS_PACKAGE_MANAGER..."
+
+        case "$BEADS_PACKAGE_MANAGER" in
+            brew)
+                if brew install beads 2>/dev/null; then
+                    print_color "$GREEN" "✓ Beads installed via Homebrew"
+                else
+                    print_color "$YELLOW" "⚠️  Could not install via brew. Install manually: brew install beads"
+                fi
+                ;;
+            npm)
+                if npm install -g @beads/bd 2>/dev/null; then
+                    print_color "$GREEN" "✓ Beads installed via npm"
+                else
+                    print_color "$YELLOW" "⚠️  Could not install via npm. Install manually: npm install -g @beads/bd"
+                fi
+                ;;
+            pnpm)
+                if pnpm add -g @beads/bd 2>/dev/null; then
+                    print_color "$GREEN" "✓ Beads installed via pnpm"
+                else
+                    print_color "$YELLOW" "⚠️  Could not install via pnpm. Install manually: pnpm add -g @beads/bd"
+                fi
+                ;;
+            yarn)
+                if yarn global add @beads/bd 2>/dev/null; then
+                    print_color "$GREEN" "✓ Beads installed via yarn"
+                else
+                    print_color "$YELLOW" "⚠️  Could not install via yarn. Install manually: yarn global add @beads/bd"
+                fi
+                ;;
+        esac
+    fi
+
+    # Initialize beads in target directory
+    if command -v bd &> /dev/null; then
+        if [ ! -d "$TARGET_DIR/.beads" ]; then
+            (cd "$TARGET_DIR" && bd init --stealth --quiet)
+            print_color "$GREEN" "✓ Beads initialized"
+
+            # Generate BEADS.md documentation
+            if (cd "$TARGET_DIR" && bd setup claude -o "$TARGET_DIR/workflow/addons/BEADS.md" 2>/dev/null); then
+                print_color "$GREEN" "✓ Beads documentation generated"
+            fi
+        else
+            print_color "$YELLOW" "→ Beads already initialized"
+        fi
+    else
+        print_color "$YELLOW" "⚠️  Beads CLI not available. Install manually"
+    fi
+}
+
 # Display MCP server information
 display_mcp_info() {
     if [ "$INSTALL_CONTEXT7" = "y" ] || [ "$INSTALL_GEMINI" = "y" ]; then
@@ -783,13 +871,16 @@ display_mcp_info() {
     # Beads task tracker info
     if [ "$INSTALL_BEADS" = "y" ]; then
         echo
-        print_color "$BLUE" "=== Beads Task Tracker Setup ==="
+        print_color "$BLUE" "=== Beads Task Tracker ==="
         echo
-        print_color "$YELLOW" "Beads Task Tracker:"
-        echo "  Install CLI: brew install beads OR npm install -g @beads/bd"
-        echo "  Initialize: cd $TARGET_DIR && bd init"
-        echo "  Commands: /bd:ready, /bd:create, /bd:show, /bd:update, /bd:close, /bd:dep"
-        echo "  Documentation: https://github.com/steveyegge/beads"
+        print_color "$GREEN" "✓ Beads CLI installed and initialized"
+        print_color "$YELLOW" "Quick start:"
+        echo "  /bd:work   - Find and claim a ready task"
+        echo "  /bd:create - Create a new task"
+        echo "  /bd:close  - Close completed task"
+        echo
+        echo "  Full docs: $TARGET_DIR/workflow/addons/BEADS.md"
+        echo "  GitHub: https://github.com/steveyegge/beads"
         echo
     fi
 }
@@ -811,7 +902,7 @@ show_next_steps() {
 
     if [ "$INSTALL_GEMINI" = "y" ]; then
         echo "${step_num}. Set your coding standards for Gemini:"
-        echo "   - Edit: $TARGET_DIR/MCP-ASSISTANT-RULES.md"
+        echo "   - Edit: $TARGET_DIR/workflow/addons/MCP-ASSISTANT-RULES.md"
         echo
         ((step_num++))
     fi
@@ -824,10 +915,10 @@ show_next_steps() {
     fi
 
     if [ "$INSTALL_BEADS" = "y" ]; then
-        echo "${step_num}. Initialize Beads task tracking:"
-        echo "   cd $TARGET_DIR"
-        echo "   brew install beads  # or: npm install -g @beads/bd"
-        echo "   bd init"
+        echo "${step_num}. Start using Beads task tracking:"
+        echo "   /bd:work   - Find and claim a ready task"
+        echo "   /bd:create - Create a new task"
+        echo "   Docs: workflow/addons/BEADS.md"
         echo
         ((step_num++))
     fi
@@ -868,6 +959,7 @@ main() {
     # Run checks
     check_claude_code
     check_required_tools
+    check_beads_prerequisites
 
     # Get user input
     get_target_directory
@@ -892,6 +984,11 @@ main() {
     copy_framework_files
     set_permissions
     generate_config
+
+    # Initialize beads if selected
+    if [ "$INSTALL_BEADS" = "y" ]; then
+        initialize_beads
+    fi
 
     # Show completion information
     display_mcp_info
