@@ -3,23 +3,22 @@ Update task status and metadata.
 ## Usage
 
 ```bash
-/bd:update <issue-id> [options]
+/bd:update <task-id> [options]
 ```
 
 ## Options
 
-- `--claim` - Atomically claim task (sets assignee + in_progress)
-- `--status` - Set status (open, in_progress, blocked, deferred, closed)
-- `--title` - Update title
-- `--description` - Update description
-- `--notes` - Add notes to the task
+- `--claim` - Claim the task atomically
+- `--status` - Set status: open, in-progress, blocked, done
+- `--priority` - Update priority: 0-4
+- `--note` - Add a note
 
-## Example
+## Examples
 
 ```bash
 /bd:update bd-abc123 --claim
-/bd:update bd-abc123 --status blocked --notes "Waiting on API response"
-/bd:update bd-abc123 --title "Updated task title"
+/bd:update bd-abc123 --status in-progress
+/bd:update bd-abc123 --priority 1 --note "Started work"
 ```
 
 ## Auto-Loaded Context
