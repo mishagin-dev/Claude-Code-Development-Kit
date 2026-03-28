@@ -16,6 +16,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 - **Moved `MCP-ASSISTANT-RULES.md`** from project root to `workflow/addons/` for better organization
+- **Updated `beads-section.md`** — uses `@workflow/addons/BEADS.md` reference so Claude Code auto-loads Beads documentation
+- **Fixed CLAUDE.md template** — Gemini section now references correct path `/workflow/addons/MCP-ASSISTANT-RULES.md`
+- **Updated `gemini-context-injector.sh`** — path updated to `workflow/addons/MCP-ASSISTANT-RULES.md`
+- **Refined all `/bd:*` command templates** — improved documentation and usage clarity
+- **Updated `.gitignore`** — added exclusions for Dolt database files and Beads internal files
+
+### Migration Notes (v2.4.1 → v2.5.0)
+- If you previously had `MCP-ASSISTANT-RULES.md` in your project root, move it to `workflow/addons/`
+- Update any references to the old path in your CLAUDE.md and hook configurations
+- Re-run `setup.sh` to get automatic Beads initialization on new projects
+
+
 ## [2.4.1] - 2026-03-26
 
 ### Changed
