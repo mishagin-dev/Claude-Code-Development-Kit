@@ -144,8 +144,11 @@ your-project/
 │   ├── CONTEXT-tier2-component.md  # Component documentation template
 │   └── CONTEXT-tier3-feature.md    # Feature documentation template
 ├── logs/                  # Hook execution logs (created at runtime)
+├── workflow/
+│   └── addons/            # Addon configurations
+│       ├── MCP-ASSISTANT-RULES.md  # MCP coding standards (if Gemini-Assistant-MCP selected)
+│       └── BEADS.md       # Beads task tracker docs (auto-generated if Beads selected)
 ├── CLAUDE.md              # Your project's AI context (from template)
-└── MCP-ASSISTANT-RULES.md # MCP coding standards (if Gemini-Assistant-MCP selected)
 ```
 
 **Note**: The exact files installed depend on your choices during setup (MCP servers, notifications, etc.)

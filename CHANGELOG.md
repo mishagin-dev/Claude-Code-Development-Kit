@@ -11,6 +11,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ### Added
 - **Beads installation prerequisites check** — setup.sh now verifies a supported package manager (brew/npm/pnpm/yarn) exists before offering the Beads integration option
 - **Automatic Beads initialization** — when Beads is selected, setup.sh now runs `bd init --stealth --quiet` and `bd setup claude -o workflow/addons/BEADS.md` automatically, eliminating the manual `bd init` step
+- **`workflow/addons/` directory** — new organized location for addon-related files (MCP-ASSISTANT-RULES.md, BEADS.md)
+- **Beads context injection for sub-agents** — `subagent-context-injector.sh` now optionally includes `workflow/addons/BEADS.md` when present
 ## [2.4.1] - 2026-03-26
 
 ### Changed
