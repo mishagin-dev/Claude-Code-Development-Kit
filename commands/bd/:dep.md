@@ -3,35 +3,27 @@ Manage dependencies between tasks.
 ## Usage
 
 ```bash
-/bd:dep <action> [args]
+/bd:dep <command> [options]
 ```
 
-## Actions
+## Commands
 
 - `add <child> <parent>` - Add dependency (child blocks parent)
 - `remove <child> <parent>` - Remove dependency
-- `tree <issue-id>` - Show dependency tree
+- `tree <task-id>` - Show dependency tree
 
 ## Dependency Types
 
-When adding dependencies, specify the relationship:
+- `blocks` - Blocks execution (default)
+- `discovered-from` - Found during work on another task
+- `related-to` - Related but not blocking
 
-- `blocks` - Child blocks parent (default)
-- `parent-child` - Hierarchical relationship
-- `related` - Loose association
-- `discovered-from` - Side quest origin task
-
-## Example
+## Examples
 
 ```bash
-# Add blocking dependency
-/bd:dep add bd-child123 bd-parent456
-
-# Show dependency tree
-/bd:dep tree bd-epic789
-
-# Remove dependency
-/bd:dep remove bd-child123 bd-parent456
+/bd:dep add bd-child bd-parent
+/bd:dep add bd-bug bd-feature --type discovered-from
+/bd:dep tree bd-epic123
 ```
 
 ## Auto-Loaded Context
