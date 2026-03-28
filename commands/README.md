@@ -98,7 +98,7 @@ All commands benefit from automatic context injection via the `subagent-context-
 
 **Relationship with `/full-context`**: `/implement` includes its own research phase, so you can use it directly. Optionally, run `/full-context` first when you need deeper analysis before committing to an approach — `/implement` will leverage those findings and reduce redundant research.
 
-**How it works**: Parses the request and gathers context, assesses scope to choose a strategy tier (direct/focused/comprehensive), researches patterns via sub-agents, writes a plan to `tasks/todo.md` for user approval, executes the plan, runs a `/simplify` pass on changed code, runs verification checks, and triggers documentation updates.
+**How it works**: Parses the request and gathers context, assesses scope to choose a strategy tier (direct/focused/comprehensive), researches patterns via sub-agents, writes a plan to `.claude/plan.md` for user approval, executes the plan, runs a `/simplify` pass on changed code, runs verification checks, and triggers documentation updates.
 
 ### ♻️ `/refactor`
 **Purpose**: Intelligently restructure code while maintaining functionality and updating all dependencies.
