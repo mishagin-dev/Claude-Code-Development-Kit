@@ -3,22 +3,21 @@ Create a new task.
 ## Usage
 
 ```bash
-/bd:create "Title" [options]
+/bd:create "title" [options]
 ```
 
 ## Options
 
-- `-t, --type` - Task type (task, bug, feature, epic, chore)
-- `-p, --priority` - Priority level (0-4, 0=critical)
-- `--deps` - Dependencies (e.g., `blocks:bd-abc`, `discovered-from:bd-xyz`)
-- `--json` - JSON output
+- `-t, --type` - Task type: task, bug, feature, epic, chore (default: task)
+- `-p, --priority` - Priority: 0-4 (default: 2)
+- `--claim` - Claim the task immediately
 
-## Example
+## Examples
 
 ```bash
-/bd:create "Fix auth bug in login flow"
-/bd:create "Add dark mode support" -t feature -p 2
-/bd:create "Side quest from review" --deps discovered-from:bd-xyz123
+/bd:create "Fix login bug"
+/bd:create "Add dark mode" -t feature -p 1
+/bd:create "Refactor API" -t chore --claim
 ```
 
 ## Auto-Loaded Context
