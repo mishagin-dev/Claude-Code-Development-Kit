@@ -1,13 +1,4 @@
-Start working on a ready task from beads.
-
-## Workflow
-
-1. List ready tasks with `bd ready`
-2. Ask user which task to work on (or take first if only one)
-3. Claim the task: `bd update <id> --claim`
-4. Read task details: `bd show <id>`
-5. Execute the task following CCDK patterns
-6. Close when done: `bd close <id> --reason "..."`
+Find and claim a ready task, then work on it.
 
 ## Usage
 
@@ -15,7 +6,20 @@ Start working on a ready task from beads.
 /bd:work [task-id]
 ```
 
-If no task-id provided, shows ready tasks and asks which to work on.
+## What It Does
+
+1. Lists ready tasks (if no ID provided)
+2. Claims the selected task atomically
+3. Shows task details
+4. You do the work
+5. Close with `/bd:close <id> --reason "..."`
+
+## Examples
+
+```bash
+/bd:work              # List and select from ready tasks
+/bd:work bd-abc123    # Claim specific task
+```
 
 ## Auto-Loaded Context
 
@@ -23,4 +27,4 @@ If no task-id provided, shows ready tasks and asks which to work on.
 
 ---
 
-Execute workflow for ready beads task.
+Execute: `bd ready && bd update $ARGUMENTS --claim && bd show $ARGUMENTS`
