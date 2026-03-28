@@ -36,14 +36,23 @@ current_prompt=$(echo "$INPUT_JSON" | jq -r '.tool_input.prompt // ""')
 
 # Build context injection header with project documentation references
 # These files are automatically available to all sub-agents via @ references
+
+# Check for optional context files
+BEADS_FILE="$PROJECT_ROOT/workflow/addons/BEADS.md"
+beads_context=""
+if [ -f "$BEADS_FILE" ]; then
+    beads_context="
+- @$BEADS_FILE (Beads task tracking commands and workflow)"
+fi
+
 context_injection="## Auto-Loaded Project Context
 
 This sub-agent has automatic access to the following project documentation:
 - @$PROJECT_ROOT/workflow/CLAUDE.md (Project overview, coding standards, and AI instructions)
 - @$PROJECT_ROOT/workflow/ai-context/project-structure.md (Complete file tree and tech stack)
-- @$PROJECT_ROOT/workflow/ai-context/docs-overview.md (Documentation architecture)
+- @$PROJECT_ROOT/workflow/ai-context/docs-overview.md (Documentation architecture)$beads_context
 
-These files provide essential context about the project structure, 
+These files provide essential context about the project structure,
 conventions, and development patterns. Reference them as needed for your task.
 
 ---
