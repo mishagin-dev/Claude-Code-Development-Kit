@@ -209,6 +209,26 @@ mcp__context7__get_library_docs(
 - Support for specific library versions
 - Integration with current development practices
 
+### JetBrains IDE MCP Server
+**Priority rule:** When the JetBrains MCP server is available and applicable, always prefer using it over built-in tools for IDE-level operations.
+
+**When to use (prefer over built-in tools):**
+- Code navigation: go to definition, find references, find implementations
+- Code intelligence: hover documentation, symbol search, call hierarchies
+- Diagnostics: reading IDE-reported errors, warnings, and inspections
+- Refactoring: renaming, moving, extracting code through IDE-aware operations
+- Project symbol search and navigation across the entire codebase
+
+**Why prefer JetBrains MCP:**
+- IDE has full project index with type-aware analysis — more accurate than text-based search
+- Understands language semantics, not just syntax — catches edge cases grep/ripgrep miss
+- Provides real-time diagnostics from the running IDE (compilation errors, type errors, linting)
+- Refactorings through the IDE are safe — they update all references, imports, and usings automatically
+
+**Practical guidance:**
+- Use JetBrains MCP for LSP operations (definition, references, hover, symbols) instead of built-in `Grep`/`Glob` when the server is connected
+- Fall back to built-in tools (`Grep`, `Glob`, `Read`) only when JetBrains MCP is unavailable or for non-semantic searches (e.g., searching for a string literal, finding files by name pattern)
+- Combine both: use JetBrains for semantic understanding, built-in tools for bulk file operations
 
 
 ## 6. Post-Task Completion Protocol
